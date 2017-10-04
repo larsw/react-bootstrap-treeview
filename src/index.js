@@ -1,4 +1,5 @@
-import { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 class TreeView extends Component {
   static propTypes = {
@@ -54,12 +55,12 @@ class TreeView extends Component {
   }
 
   render () {
-    this.setNodeId({ nodes: this.data })
+    this.setNodeId({ nodes: this.props.data })
 
     var children = []
-    if (this.data) {
+    if (this.props.data) {
       var _this = this
-      this.data.forEach(function (node) {
+      this.props.data.forEach(function (node) {
         children.push(<TreeNode node={node}
           level={1}
           visible
@@ -81,6 +82,20 @@ class TreeNode extends Component {
   getInitialState () {
     var node = this.props.node
     return {
+      expanded: (node.state && node.state.hasOwnProperty('expanded'))
+                  ? node.state.expanded
+                    : (this.props.level < this.props.options.levels),
+      selected: (node.state && node.state.hasOwnProperty('selected'))
+                  ? node.state.selected
+                  : false
+    }
+  }
+
+  constructor (props) {
+    super(props)
+    const node = this.props.node
+
+    this.state = {
       expanded: (node.state && node.state.hasOwnProperty('expanded'))
                   ? node.state.expanded
                     : (this.props.level < this.props.options.levels),
